@@ -1,0 +1,17 @@
+{
+    "name": "codeages/token-bucket",
+    "description": "Token Bucket.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": { 
+            "Codeages\\TokenBucket\\": "src/",
+            "Codeages\\TokenBucket\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+    },
+    "config" : {
+        "bin-dir" : "bin"
+    }
+}

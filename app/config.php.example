@@ -1,0 +1,26 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: li
+ * Date: 16-8-3
+ * Time: 下午3:01
+ */
+return array(
+    'database' => array(
+        'driver' => 'pdo_mysql',
+        'host' => '127.0.0.1',
+        'port' => 3306,
+        'name' => 'bucket',
+        'user' => 'root',
+        'password' => 'root',
+        'charset' => 'utf8',
+        'table' => 'token'
+    ),
+    'redis' => array(
+        'host' => '127.0.0.1',
+        'port' => 6379,
+        'timeout' => 1,
+        'reserved' => null,
+        'retry_interval' => 100,
+    ),
+);

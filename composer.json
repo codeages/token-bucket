@@ -10,6 +10,10 @@
         }
     },
     "require": {
+        "php" : ">=5.5.5",
+        "robmorgan/phinx" : "v0.5.0",
+        "doctrine/dbal": ">=2.5.0",
+        "psr/log": "1.0.0"
     },
     "config" : {
         "bin-dir" : "bin"

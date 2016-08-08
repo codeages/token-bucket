@@ -1,0 +1,24 @@
+<?php
+
+$config = include __DIR__.'/app/config.php';
+
+$db = $config['database'];
+
+return array(
+    'paths' => array(
+        'migrations' => 'app/migrations',
+    ),
+    'environments' => array(
+        'default_migration_table' => 'migrations',
+        'default_database' => 'dev',
+        'dev' => array(
+            'adapter' => 'mysql',
+            'host' => $db['host'],
+            'name' => $db['name'],
+            'user' => $db['user'],
+            'pass' => $db['password'],
+            'port' => $db['port'],
+            'charset' => $db['charset'],
+        ),
+    ),
+);

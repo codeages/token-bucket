@@ -5,9 +5,9 @@
  * Date: 16-8-3
  * Time: 下午3:25
  */
-namespace Codeages\TokenBucket\Proxy;
+namespace Codeages\TokenBucket\Driver;
 
-abstract class Proxy
+abstract class Driver
 {
     protected $storage = null;
 

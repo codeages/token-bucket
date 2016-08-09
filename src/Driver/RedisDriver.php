@@ -5,11 +5,11 @@
  * Date: 16-8-3
  * Time: 下午4:56
  */
-namespace Codeages\TokenBucket\Proxy;
+namespace Codeages\TokenBucket\Driver;
 
 use Codeages\TokenBucket\Kit\FileConfig;
 
-class RedisProxy extends Proxy
+class RedisDriver extends Driver
 {
     private $config;
 

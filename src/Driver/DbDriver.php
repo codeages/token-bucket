@@ -5,12 +5,12 @@
  * Date: 16-8-3
  * Time: 下午3:43
  */
-namespace Codeages\TokenBucket\Proxy;
+namespace Codeages\TokenBucket\Driver;
 
 use Doctrine\DBAL\DriverManager;
 use Codeages\TokenBucket\Kit\FileConfig;
 
-class DbProxy extends Proxy
+class DbDriver extends Driver
 {
     private $config;
     private $table;

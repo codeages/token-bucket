@@ -7,7 +7,7 @@
  */
 namespace Codeages\TokenBucket\Service;
 
-use Codeages\TokenBucket\Proxy\Proxy;
+use Codeages\TokenBucket\Driver\Driver;
 
 class TokenBucket
 {
@@ -16,7 +16,7 @@ class TokenBucket
     protected $rates;
     protected $executedTime;
     protected $key;
-    protected $proxy;
+    protected $driver;
 
     public function __construct($tokens, $rates, $key)
     {
@@ -27,15 +27,15 @@ class TokenBucket
         $this->executedTime = time();
     }
 
-    public function setProxy(Proxy $proxy)
+    public function setdriver(Driver $driver)
     {
-        $this->proxy = $proxy;
+        $this->driver = $driver;
         return $this;
     }
 
     public function watch()
     {
-        $bucket = $this->proxy->get($this->key);
+        $bucket = $this->driver->get($this->key);
         $this->_setByBucket($bucket);
     }
 
@@ -48,7 +48,7 @@ class TokenBucket
 
     public function update()
     {
-        $this->proxy->update($this->key, $this->_getBucket());
+        $this->driver->update($this->key, $this->_getBucket());
     }
 
     public function show()

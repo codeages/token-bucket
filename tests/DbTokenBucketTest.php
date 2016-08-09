@@ -7,7 +7,7 @@
  */
 namespace Codeages\TokenBucket\Test;
 
-use Codeages\TokenBucket\Proxy\DbProxy;
+use Codeages\TokenBucket\Driver\DbDriver;
 use Codeages\TokenBucket\Service\TokenBucket;
 
 class DbTokenBucketTest extends \PHPUnit_Framework_TestCase
@@ -17,11 +17,11 @@ class DbTokenBucketTest extends \PHPUnit_Framework_TestCase
     private $tokens = 30;
     private $rates = 10;
     private $consumeRate = 30;
-    private $proxy;
+    private $driver;
 
     public function setUp()
     {
-        $this->proxy = new DbProxy(array(
+        $this->driver = new DbDriver(array(
             'driver' => 'pdo_mysql',
             'host' => '127.0.0.1',
             'port' => 3306,
@@ -30,9 +30,9 @@ class DbTokenBucketTest extends \PHPUnit_Framework_TestCase
             'password' => 'root',
             'charset' => 'utf8',
         ));
-        $this->proxy->setTable('token');
+        $this->driver->setTable('token');
         $this->tokenBucket = new TokenBucket($this->tokens, $this->rates, $this->key);
-        $this->tokenBucket->setProxy($this->proxy)->watch();
+        $this->tokenBucket->setDriver($this->driver)->watch();
     }
 
     public function testTokenBucket()

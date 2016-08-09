@@ -7,7 +7,7 @@
  */
 namespace Codeages\TokenBucket\Test;
 
-use Codeages\TokenBucket\Proxy\RedisProxy;
+use Codeages\TokenBucket\Driver\RedisDriver;
 use Codeages\TokenBucket\Service\TokenBucket;
 
 class RedisTokenBucketTest extends \PHPUnit_Framework_TestCase
@@ -21,13 +21,13 @@ class RedisTokenBucketTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->proxy = new RedisProxy(array(
+        $this->proxy = new RedisDriver(array(
             'host' => '127.0.0.1',
             'port' => 6379,
             'timeout' => 1,
         ));
         $this->tokenBucket = new TokenBucket($this->tokens, $this->rates, $this->key);
-        $this->tokenBucket->setProxy($this->proxy)->watch();
+        $this->tokenBucket->setDriver($this->proxy)->watch();
     }
 
     public function testTokenBucket()

@@ -35,7 +35,8 @@
         or 
         
         $proxy = new DbProxy();
-        $proxy->setStorage($db); 
+        $proxy->setStorage($db);
+        $proxy->setTable('token');
         
         $tokens = 30; //remain tokens
         $rates = 10; //the rate of token resume

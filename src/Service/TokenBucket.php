@@ -7,10 +7,15 @@
  */
 namespace Codeages\TokenBucket\Service;
 
+use bandwidthThrottle\tokenBucket\TokenBucketException;
 use Codeages\TokenBucket\Driver\Driver;
+use Codeages\TokenBucket\Kit\MicroTime;
+use malkusch\lock\exception\MutexException;
 
 class TokenBucket
 {
+    const TOKEN_BUCKET_KEY = "token_bucket_%s";
+
     protected $capacity;
     protected $tokens;
     protected $rates;
@@ -23,11 +28,11 @@ class TokenBucket
         $this->capacity = $tokens;
         $this->tokens = $tokens;
         $this->rates = $rates;
-        $this->key = $key;
-        $this->executedTime = time();
+        $this->key = sprintf(self::TOKEN_BUCKET_KEY, $key);
+        $this->executedTime = MicroTime::get();
     }
 
-    public function setdriver(Driver $driver)
+    public function setDriver(Driver $driver)
     {
         $this->driver = $driver;
         return $this;
@@ -36,7 +41,7 @@ class TokenBucket
     public function watch()
     {
         $bucket = $this->driver->get($this->key);
-        $this->_setByBucket($bucket);
+        $this->setByBucket($bucket);
     }
 
     public function clear()
@@ -48,26 +53,41 @@ class TokenBucket
 
     public function update()
     {
-        $this->driver->update($this->key, $this->_getBucket());
+        $this->driver->update($this->key, $this->getBucket());
     }
 
     public function show()
     {
-        return $this->_getBucket();
+        return $this->getBucket();
     }
 
     public function consume($tokens)
     {
-        $consumeFlag = false;
-        if ($tokens <= $this->_tokens()) {
-            $this->tokens -= $tokens;
-            $consumeFlag = true;
+        try {
+            return $this->driver->getMux()->synchronized(
+                function () use ($tokens){
+                    $this->pull();
+                    $consumeFlag = false;
+                    if ($tokens <= $this->tokens()) {
+                        $this->tokens -= $tokens;
+                        $consumeFlag = true;
+                    }
+                    $this->update();
+                    return $consumeFlag;
+                }
+            );
+        } catch (MutexException $e) {
+            throw new TokenBucketException("could not lock token consumption");
         }
-        $this->update();
-        return $consumeFlag;
     }
 
-    private function _getBucket()
+    private function pull()
+    {
+        $bucket = $this->driver->get($this->key);
+        $this->setByBucket($bucket);
+    }
+
+    private function getBucket()
     {
         return array(
             'capacity' => $this->capacity,
@@ -77,11 +97,11 @@ class TokenBucket
         );
     }
 
-    private function _tokens()
+    private function tokens()
     {
-        $now = time();
+        $now = MicroTime::get();
         if ($this->tokens < $this->capacity) {
-            $delta = $this->rates * ($now - $this->executedTime);
+            $delta = intval($this->rates * ($now - $this->executedTime) / 1000);
             $this->tokens = min($this->capacity, $this->tokens + $delta);
         }
         $this->executedTime = $now;
@@ -89,7 +109,7 @@ class TokenBucket
         return $this->tokens;
     }
 
-    private function _setByBucket($bucket)
+    private function setByBucket($bucket)
     {
         if (empty($bucket)) {
             return;

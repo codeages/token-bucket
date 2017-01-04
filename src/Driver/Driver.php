@@ -16,4 +16,6 @@ abstract class Driver
     public abstract function get($key);
 
     public abstract function update($key, $bucket);
+
+    public abstract function getMux();
 }
